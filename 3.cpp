@@ -1,9 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
+#include <windows.h>
 using namespace std;
 
 char mat[30001][30001];
+char aux_mat[30001][30001];
 int n , m;
 
 struct {
@@ -13,6 +15,7 @@ struct {
 int lee(int x,int y)
 {
     mat[x][y] = 'x';
+    aux_mat[x][y] = 'x';
 
     int aux = 0;
     if(final_.x == x && final_.y == y)
@@ -49,7 +52,7 @@ int lee(int x,int y)
     if(aux)
         return 1;
 
-    //mat[x][y] = ' ';
+    aux_mat[x][y] = ' ';
     return 0;
 }
 
@@ -107,6 +110,7 @@ int main()
                     final_.y = j;
                 }
                 cout << mat[i][j];
+                aux_mat[i][j] = mat[i][j];
             }
         cout << endl;
     }
@@ -121,6 +125,8 @@ int main()
 
     int rez = lee(start_.x,start_.y);
     mat[final_.x][final_.y] = 'F';
+    mat[start_.x][start_.y] = 'S';
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     if(rez)
         for(int i=0;i<n;i++)
@@ -138,7 +144,15 @@ int main()
                         final_.x = i;
                         final_.y = j;
                     }
-                    cout << mat[i][j];
+
+                    if(aux_mat[i][j] == 'x')
+                    {
+                        SetConsoleTextAttribute(hConsole, 4);
+                        cout << aux_mat[i][j];
+                        SetConsoleTextAttribute(hConsole, 10);
+                    }
+                    else
+                        cout << aux_mat[i][j];
                 }
             cout << endl;
         }
